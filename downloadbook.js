@@ -1,6 +1,8 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
+const bookName = "寻秦记";
+const bookAuthor = "黄易";
 const savedFileName = "xunqinji.txt";
 const indexUrl = "http://99csw.com/book/1501/index.htm";
 const bookFolderPath = "http://99csw.com/book/1501/";
@@ -9,6 +11,8 @@ const endPageNumber =  40612;
 
 (async () => {
   const file = fs.createWriteStream(savedFileName, {flags: 'a'});
+  file.write(bookName + "\n\n" + bookAuthor + "\n\n\n");
+  file.write(indexUrl + "\n\n\n");
 
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
