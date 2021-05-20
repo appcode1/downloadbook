@@ -1,37 +1,39 @@
+/* download the book content from www.99csw.com */
+
+//update the book index url:
+const bookIndexUrl = "http://99csw.com/book/1501/index.htm";
+
+
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
-const bookName = "寻秦记";
-const bookAuthor = "黄易";
-const savedFileName = "xunqinji.txt";
-const indexUrl = "http://99csw.com/book/1501/index.htm";
-const bookFolderPath = "http://99csw.com/book/1501/";
-const startPageNumber = 40321;
-const endPageNumber =  40612;
-
 (async () => {
-  const file = fs.createWriteStream(savedFileName, {flags: 'a'});
-  file.write(bookName + "\n\n" + bookAuthor + "\n\n\n");
-  file.write(indexUrl + "\n\n\n");
+  const isoDatetimeString = (new Date()).toISOString().replace(/:/g,'');
+  const outputFileName = "output_" + isoDatetimeString + ".txt";
+  console.info("The output file will be: " + outputFileName);
+  const file = fs.createWriteStream(outputFileName, {flags: 'a'});
 
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
-  console.log('working on ' + indexUrl);
-  await page.goto(indexUrl, {
+  console.info('working on ' + bookIndexUrl);
+  await page.goto(bookIndexUrl, {
     waitUntil: 'networkidle2',
   });
   await autoScroll(page);
+  const bookName = await page.$eval('#book_info > h2', e => e.innerText);
+  const bookAuthor = await page.$eval('#book_info > h4', e => e.innerText);
+  file.write(bookIndexUrl + "\n\n\n");
+  file.write(bookName + "\n\n" + bookAuthor + "\n\n\n");
   let value = await page.$eval('#dir', e => e.innerText);
   file.write(value + "\n\n\n");
 
-
+  const pageUrls = await page.evaluate(() => Array.from(document.querySelectorAll('#dir > dd > a'), element => element.href));
  
-  for(let i=startPageNumber; i<=endPageNumber; i++)
+  for(let i=0; i<pageUrls.length; i++)
   {
-    var thePageUrl = bookFolderPath + String(i) + ".htm";
-    console.log('working on ' + thePageUrl);
-    await page.goto(thePageUrl, {
+    console.info('working on ' + pageUrls[i]);
+    await page.goto(pageUrls[i], {
       waitUntil: 'networkidle2',
     });
     await autoScroll(page);
@@ -42,7 +44,7 @@ const endPageNumber =  40612;
   await browser.close();
 
   file.end();
-  
+  console.info("Done: File is saved as " + outputFileName);
 })();
 
 async function autoScroll(page){
