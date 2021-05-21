@@ -40,7 +40,7 @@ const fs = require('fs');
     });
     await autoScroll(page);
     value = await page.$eval('#content', e => e.innerText);
-    file.write(value + "\n\n\n");
+    file.write(value.replace(/\n/g,"\n\n") + "\n\n\n");
   }
 
   await browser.close();
