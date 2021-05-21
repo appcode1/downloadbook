@@ -39,7 +39,7 @@ const fs = require('fs');
       waitUntil: 'networkidle2',
     });
     await autoScroll(page);
-    let value = await page.$eval('#content', e => e.innerText);
+    value = await page.$eval('#content', e => e.innerText);
     file.write(value + "\n\n\n");
   }
 
