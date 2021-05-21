@@ -8,8 +8,10 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 
 (async () => {
-  const isoDatetimeString = (new Date()).toISOString().replace(/:/g,'');
-  const outputFileName = "output_" + isoDatetimeString + ".txt";
+  const nowTime = new Date();
+  const datetimeString = String(nowTime.getFullYear()) + String(nowTime.getMonth() + 1).padStart(2,'0') + String(nowTime.getDate()).padStart(2,'0') + "_"
+    + String(nowTime.getHours()).padStart(2,'0') + String(nowTime.getMinutes()).padStart(2,'0') + String(nowTime.getSeconds()).padStart(2,'0');
+  const outputFileName = "output_" + datetimeString + ".txt";
   console.info("The output file will be: " + outputFileName);
   const file = fs.createWriteStream(outputFileName, {flags: 'a'});
 
