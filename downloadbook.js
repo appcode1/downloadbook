@@ -1,19 +1,18 @@
 /* download the book content from www.99csw.com */
 
 //update the book index url:
-const bookIndexUrl = "http://99csw.com/book/1501/index.htm";
+const bookIndexUrl = "https://www.99csw.com/book/1501/index.htm";
 
 
-const puppeteer = require('puppeteer');
 const fs = require('fs');
+const puppeteer = require('puppeteer');
 
 (async () => {
-  const nowTime = new Date();
+  let nowTime = new Date();
   const datetimeString = String(nowTime.getFullYear()) + String(nowTime.getMonth() + 1).padStart(2,'0') + String(nowTime.getDate()).padStart(2,'0') + "_"
     + String(nowTime.getHours()).padStart(2,'0') + String(nowTime.getMinutes()).padStart(2,'0') + String(nowTime.getSeconds()).padStart(2,'0');
-  const outputFileName = "output_" + datetimeString + ".txt";
-  console.info("The output file will be: " + outputFileName);
-  const file = fs.createWriteStream(outputFileName, {flags: 'a'});
+  const tempOutputFileName = "output_" + datetimeString + ".txt";
+  const file = fs.createWriteStream(tempOutputFileName, {flags: 'a'});
 
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
@@ -40,13 +39,19 @@ const fs = require('fs');
     });
     await autoScroll(page);
     value = await page.$eval('#content', e => e.innerText);
+    
     file.write(value.replace(/\n/g,"\n\n") + "\n\n\n");
   }
 
   await browser.close();
 
   file.end();
-  console.info("Done: File is saved as " + outputFileName);
+
+  nowTime = new Date();
+  const outputFileName = bookName + "_99csw_" + String(nowTime.getFullYear()) + String(nowTime.getMonth() + 1).padStart(2,'0') + String(nowTime.getDate()).padStart(2,'0') + ".txt";
+  fs.renameSync(tempOutputFileName, outputFileName);
+  
+  console.info("Done: The book text file is saved as " + outputFileName);
 })();
 
 async function autoScroll(page){
