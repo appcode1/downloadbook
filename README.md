@@ -9,13 +9,13 @@ In order to run this javascript code at a local computer, need to prepare the en
 If you want to download a different book, just use any editor to open this javascript file and edit the following line:
 
     //update the book index url:
-    const bookIndexUrl = "http://99csw.com/book/1501/index.htm";
+    const bookIndexUrl = "https://www.99csw.com/book/1501/index.htm";
 
 
 
 In the command line, just run this javascript file to download the book:
    <br/> <b>node downloadbook.js</b>
 
-The output file is saved as <b>output_YYYYMMDD_hhmmss.txt</b>
+The output file is saved as the format: <b>BOOKNAME_99csw_YYYYMMDD.txt</b>
 
 Have fun!
