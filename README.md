@@ -16,6 +16,6 @@ If you want to download a different book, just use any editor to open this javas
 In the command line, just run this javascript file to download the book:
    <br/> <b>node downloadbook.js</b>
 
-The output file is saved as <b>output_{ISOTimeString}.txt</b>
+The output file is saved as <b>output_YYYYMMDD_hhmmss.txt</b>
 
 Have fun!
